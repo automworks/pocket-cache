@@ -1,0 +1,81 @@
+POCKET-CACHE FIELD GUIDE
+
+ABOUT THIS DEVICE
+Pocket-Cache is a portable offline knowledge hub. It creates a local Wi-Fi hotspot so nearby devices can access maps, reference guides, and tools without internet.
+
+CONNECTING
+1. On your phone, open Wi-Fi settings.
+2. Join the network shown on the device screen (default: PocketCache).
+3. Enter the password shown in the Connect screen.
+4. Open a browser and go to: http://10.0.0.1
+5. The portal home page will load.
+
+PORTAL FEATURES
+Home (10.0.0.1):
+Card grid with links to Map, Library, and Status.
+
+Offline Map (10.0.0.1/map.html):
+Interactive map using local tile files. Zoom 0-2 covers the whole world. Add regional tiles for more detail.
+
+Library (10.0.0.1/library.html):
+Offline reference documents. Browse articles without internet.
+
+Status (10.0.0.1/status.html):
+Device info: uptime, storage, network settings.
+
+DEVICE BUTTONS
+The device has four physical buttons arranged 2x2:
+  X (top-left)  : Back / Exit
+  Y (top-right) : Select / Confirm
+  A (bottom-left) : Left / Previous
+  B (bottom-right): Right / Next
+
+Context labels are shown in the header and footer bars on screen.
+
+NAVIGATION
+From the main menu, use A/B to move between items. Press Y to open. Press X to go back.
+
+Games are accessible from the Play menu.
+
+CHANGING SETTINGS
+Open Settings from the main menu. Use A/B to navigate rows. Press Y to edit a field. Use A/B to cycle through characters. Press Y again to add a space. Press X to delete a character or exit edit mode. Select "SAVE WIFI" to apply changes and restart the hotspot.
+
+BATTERY
+The battery indicator appears on the Status screen. When battery is low the LED changes color and an alert appears.
+
+LED INDICATOR
+The LED dot in the center of the header shows device state:
+  Cyan  : Normal operation
+  Green : Client connected
+  Amber : Warning
+  Red   : Alert or error
+
+GAMES
+Available games: Sudoku, 2048, Minesweeper, Blackjack, Chess, Tetris, Game of Life, Dice.
+
+All games use the same four buttons. Controls are shown in the header and footer for each game.
+
+TROUBLESHOOTING
+Device not showing on Wi-Fi:
+- Wait 30 seconds after power-on for hotspot to start.
+- Check the LED is lit (device is running).
+- Restart the device.
+
+Portal page not loading:
+- Confirm you are on the PocketCache network.
+- Type the IP manually: http://10.0.0.1
+- Disable mobile data on your phone.
+
+Map tiles not showing:
+- The map requires zoom 0-2 tiles to be installed.
+- Higher zoom levels need regional tile packs.
+
+READER CONTROLS
+Left / Right: Turn pages
+Select (Y): Toggle font size
+Back (X): Exit to menu
+
+OFFLINE CONTENT
+Pocket-Cache works entirely without internet. All files are stored on the device. No data is sent or received over the internet while connected to this hotspot.
+
+END OF FIELD GUIDE

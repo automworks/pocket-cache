@@ -7,14 +7,34 @@
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <header class="hero compact">
-    <p class="eyebrow">local device</p>
-    <h1>Status</h1>
+  <header class="topbar">
+    <a href="/">← Home</a>
+    <strong>Device Status</strong>
+    <span id="status-mode">loading…</span>
   </header>
   <main class="grid">
-    <div class="card"><h2>Portal</h2><p>http://10.0.0.1</p></div>
-    <div class="card"><h2>Map tiles</h2><p>/tiles/{z}/{x}/{y}.png</p></div>
-    <div class="card"><h2>Mode</h2><p>Offline demo</p></div>
+    <div class="card"><h2>Network</h2><p id="s-ssid">—</p></div>
+    <div class="card"><h2>IP Address</h2><p id="s-ip">—</p></div>
+    <div class="card"><h2>Uptime</h2><p id="s-uptime">—</p></div>
+    <div class="card"><h2>CPU Temp</h2><p id="s-temp">—</p></div>
+    <div class="card"><h2>Storage Used</h2><p id="s-disk">—</p></div>
+    <div class="card"><h2>Clients</h2><p id="s-clients">—</p></div>
   </main>
+  <script>
+    fetch('/api/status')
+      .then(r => r.json())
+      .then(d => {
+        document.getElementById('s-ssid').textContent    = d.ssid     || '—';
+        document.getElementById('s-ip').textContent      = d.ip       || '—';
+        document.getElementById('s-uptime').textContent  = d.uptime   || '—';
+        document.getElementById('s-temp').textContent    = d.cpu_temp !== 'N/A' ? d.cpu_temp + '°C' : 'N/A';
+        document.getElementById('s-disk').textContent    = d.disk_used && d.disk_total ? d.disk_used + ' / ' + d.disk_total : '—';
+        document.getElementById('s-clients').textContent = d.clients !== undefined ? d.clients : '—';
+        document.getElementById('status-mode').textContent = d.mode || 'offline';
+      })
+      .catch(() => {
+        document.getElementById('status-mode').textContent = 'unavailable';
+      });
+  </script>
 </body>
 </html>

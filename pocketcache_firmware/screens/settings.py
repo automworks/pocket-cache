@@ -189,7 +189,7 @@ class SettingsScreen(Screen):
             y += 40
 
         mode = "EDIT" if self.editing else "NAV"
-        ui.centered_text(surf, f"{mode} • {self.message}", 278, COLORS.muted, ui.font_xs)
+        ui.centered_text(surf, f"{mode} • {self.message}", 262, COLORS.muted, ui.font_xs)
 
         if self.editing:
             ui.footer(surf, "MOVE", "MOVE")

@@ -5,8 +5,9 @@ After=network.target
 [Service]
 Type=simple
 User=pi
-WorkingDirectory=/opt/pocket-cache-firmware/portal
-ExecStart=/usr/bin/python3 -m http.server 80 --bind 0.0.0.0
+WorkingDirectory=/opt/pocket-cache-firmware
+ExecStart=/usr/bin/python3 portal/server.py --port 80 --bind 0.0.0.0
+Environment=POCKETCACHE_CONFIG=/etc/pocket-cache/firmware.json
 Restart=always
 RestartSec=3
 

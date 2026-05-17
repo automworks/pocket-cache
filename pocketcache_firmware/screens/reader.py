@@ -1,64 +1,52 @@
 from __future__ import annotations
 
 import textwrap
+from pathlib import Path
 import pygame
 
 from .base import Screen
 from ..theme import COLORS, WIDTH
 
+_DATA_DIR = Path(__file__).parent.parent / "data"
 
-SAMPLE_TEXT = """
-POCKET-CACHE FIELD NOTES
+_DOCS: list[tuple[str, str]] = [
+    ("Field Guide", "field_guide.txt"),
+    ("First Aid", "first_aid.txt"),
+]
 
-Pocket-cache is a small offline knowledge hub for camping, outages, travel, and anywhere the network is unavailable.
 
-This simple reader is intentionally basic. It is designed for short field references, notes, checklists, public-domain excerpts, survival cards, repair instructions, and plain text documents.
-
-The first goal is not a full ebook system. The goal is to prove that reading on the tiny LCD is possible with predictable controls.
-
-Suggested content for future builds:
-
-- First-aid quick reference
-- Camp setup checklist
-- Power and battery notes
-- Local map notes
-- Device troubleshooting
-- Short public-domain books
-- Interactive fiction hints
-
-The reader uses large bold monospace text because thin small fonts are hard to read on the two-inch display.
-
-Controls are now consistent across firmware:
-
-A is Back.
-B is Select.
-X is Left.
-Y is Right.
-
-Inside the reader, left and right move between pages. Back exits to the firmware carousel. Select toggles the text size.
-
-End of sample.
-""".strip()
+def _load(filename: str) -> str:
+    path = _DATA_DIR / filename
+    try:
+        return path.read_text(encoding="utf-8").strip()
+    except OSError:
+        return f"File not found:\n{filename}"
 
 
 class ReaderScreen(Screen):
     name = "reader"
 
     def __init__(self) -> None:
-        self.title = "Field Notes"
-        self.text = SAMPLE_TEXT
+        self.doc_index = 0
+        self._load_doc()
         self.page = 0
         self.large_text = False
         self._cached_pages_key = None
         self._pages: list[list[str]] = []
 
+    def _load_doc(self) -> None:
+        title, filename = _DOCS[self.doc_index]
+        self.title = title
+        self.text = _load(filename)
+        self._cached_pages_key = None
+        self._pages = []
+        self.page = 0
+
     def _wrap_pages(self, ui) -> list[list[str]]:
-        font = ui.font if not self.large_text else ui.font_md
-        # conservative char width for bold mono on 240px portrait
         max_chars = 22 if not self.large_text else 17
         lines_per_page = 11 if not self.large_text else 8
 
-        key = (self.large_text, max_chars, lines_per_page)
+        key = (self.doc_index, self.large_text, max_chars, lines_per_page)
         if self._cached_pages_key == key and self._pages:
             return self._pages
 
@@ -88,13 +76,27 @@ class ReaderScreen(Screen):
 
     def handle_reader_action(self, action: str) -> str | None:
         if action == "back":
-            return "exit"
+            if self.page > 0:
+                self.page = 0
+                return "handled"
+            # cycle to previous document
+            self.doc_index = (self.doc_index - 1) % len(_DOCS)
+            self._load_doc()
+            return "handled" if self.doc_index != 0 else "exit"
         if action == "left":
-            self.page = max(0, self.page - 1)
+            if self.page > 0:
+                self.page -= 1
+            else:
+                self.doc_index = (self.doc_index - 1) % len(_DOCS)
+                self._load_doc()
             return "handled"
         if action == "right":
-            # page max is clamped during draw after pages are calculated
-            self.page += 1
+            pages = self._pages or self._wrap_pages(None)  # type: ignore[arg-type]
+            if self.page < len(pages) - 1:
+                self.page += 1
+            else:
+                self.doc_index = (self.doc_index + 1) % len(_DOCS)
+                self._load_doc()
             return "handled"
         if action == "select":
             self.large_text = not self.large_text
@@ -111,7 +113,15 @@ class ReaderScreen(Screen):
         page_lines = pages[self.page]
 
         ui.centered_text(surf, self.title.upper(), 42, COLORS.text, ui.font_sm)
-        ui.centered_text(surf, f"PAGE {self.page + 1}/{len(pages)}", 64, COLORS.muted, ui.font_xs)
+        ui.centered_text(surf, f"PAGE {self.page + 1}/{len(pages)}", 62, COLORS.muted, ui.font_xs)
+
+        # doc dots
+        dot_size, gap = 6, 8
+        total_w = len(_DOCS) * (dot_size + gap) - gap
+        dot_x = (WIDTH - total_w) // 2
+        for i in range(len(_DOCS)):
+            color = COLORS.accent if i == self.doc_index else COLORS.muted
+            pygame.draw.rect(surf, color, (dot_x + i * (dot_size + gap), 76, dot_size, dot_size), border_radius=2)
 
         y = 92
         font = ui.font if not self.large_text else ui.font_md
@@ -119,13 +129,12 @@ class ReaderScreen(Screen):
 
         for line in page_lines:
             if line == "":
-                y += line_h
+                y += line_h // 2
                 continue
             ui.text(surf, line, 12, y, COLORS.text, font)
             y += line_h
 
-        # progress bar
         pct = int(((self.page + 1) / len(pages)) * 100)
-        ui.progress_bar(surf, 12, 278, WIDTH - 24, 10, pct, COLORS.accent)
+        ui.progress_bar(surf, 12, 262, WIDTH - 24, 10, pct, COLORS.accent)
 
         ui.footer(surf, "PREV", "NEXT")

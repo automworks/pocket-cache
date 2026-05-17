@@ -34,7 +34,7 @@ class BootScreen(Screen):
             pygame.draw.circle(surf, color, (x, y), 3)
 
         # Progress bar
-        ui.progress_bar(surf, 28, 194, 184, 14, int(progress * 100), COLORS.accent)
+        ui.progress_bar(surf, 28, 186, 184, 14, int(progress * 100), COLORS.accent)
 
         steps = [
             ("HOTSPOT", elapsed > 0.5),
@@ -42,11 +42,11 @@ class BootScreen(Screen):
             ("LIBRARY", elapsed > 2.0),
             ("READY", elapsed > 3.0),
         ]
-        y = 224
+        y = 212
         for label, ok in steps:
             marker = "OK" if ok else "--"
             color = COLORS.ok if ok else COLORS.muted
             ui.text(surf, f"{marker} {label}", 38, y, color, ui.font_xs)
-            y += 18
+            y += 16
 
         ui.footer(surf)

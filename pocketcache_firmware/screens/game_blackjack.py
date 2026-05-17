@@ -43,5 +43,5 @@ class BlackjackScreen(Screen):
         ui.text(surf,"BLACKJACK",16,44,COLORS.text,ui.font_md)
         self.draw_hand(surf,ui,"DEALER",self.dealer,82,hide=not self.done)
         self.draw_hand(surf,ui,"YOU",self.player,180)
-        ui.text(surf,self.msg,16,276,COLORS.accent,ui.font_xs)
+        ui.text(surf,self.msg,16,262,COLORS.accent,ui.font_xs)
         ui.footer(surf, "HIT", "STAND")

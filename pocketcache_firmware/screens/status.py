@@ -31,8 +31,8 @@ class StatusScreen(Screen):
         self._bar(surf, ui, "MEMORY", state.memory_pct, 16, 178, COLORS.warn)
         self._bar(surf, ui, "WIFI", state.wifi_signal_pct, 16, 214, COLORS.ok)
 
-        ui.text(surf, f"TEMP {state.cpu_temp_c:.1f}C", 16, 258, COLORS.text, ui.font_xs)
-        ui.text(surf, f"CLIENTS {state.clients}", 126, 258, COLORS.text, ui.font_xs)
-        ui.text(surf, f"SERVED {state.packets_served}", 16, 280, COLORS.muted, ui.font_xs)
+        ui.text(surf, f"TEMP {state.cpu_temp_c:.1f}C", 16, 248, COLORS.text, ui.font_xs)
+        ui.text(surf, f"CLIENTS {state.clients}", 126, 248, COLORS.text, ui.font_xs)
+        ui.text(surf, f"SERVED {state.packets_served}", 16, 265, COLORS.muted, ui.font_xs)
 
         ui.footer(surf, "MENU", "MENU")

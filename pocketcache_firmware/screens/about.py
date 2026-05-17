@@ -23,9 +23,9 @@ class AboutScreen(Screen):
             "MAPS + REPAIR",
             "BOOKS + GAMES",
         ]
-        y = 198
+        y = 186
         for line in lines:
             ui.centered_text(surf, line, y, COLORS.text, ui.font)
-            y += 24
+            y += 22
 
         ui.footer(surf, "PREV", "NEXT")

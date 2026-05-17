@@ -20,8 +20,8 @@ class LibraryScreen(Screen):
             ui.status_chip(surf, label, ok, 16, y, 208)
             y += 31
 
-        ui.divider(surf, 274)
-        ui.text(surf, "KIWIX", 16, 286, COLORS.muted, ui.font_xs)
-        ui.status_chip(surf, "kiwix", state.services["kiwix"], 82, 281, 104)
+        ui.divider(surf, 264)
+        ui.text(surf, "KIWIX", 16, 270, COLORS.muted, ui.font_xs)
+        ui.status_chip(surf, "kiwix", state.services["kiwix"], 82, 266, 104)
 
         ui.footer(surf)
