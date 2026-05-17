@@ -15,8 +15,8 @@ class UI:
         def f(size: int) -> pygame.font.Font:
             return pygame.font.Font(_FONT_PATH, size)
 
-        self.font_xs = f(14)
-        self.font_sm = f(15)
+        self.font_xs = f(16)
+        self.font_sm = f(16)
         self.font    = f(17)
         self.font_md = f(21)
         self.font_lg = f(30)
@@ -38,13 +38,14 @@ class UI:
         led: tuple[int, int, int] | None = None,
     ) -> None:
         """Split header: X button label on left, Y button label on right, LED dot center."""
-        pygame.draw.rect(surf, COLORS.panel, (0, 0, WIDTH, HEADER_H))
+        pygame.draw.rect(surf, COLORS.chrome, (0, 0, WIDTH, HEADER_H))
+        text_y = (HEADER_H - self.font_xs.get_height()) // 2
         if back:
-            self.text(surf, f"x {back.upper()}", PADDING, 10, COLORS.muted, self.font_xs)
+            self.text(surf, f"X {back.upper()}", 16, text_y, COLORS.muted, self.font_xs)
         if select:
             label = f"{select.upper()} +"
             rendered = self.font_xs.render(label, True, COLORS.muted)
-            surf.blit(rendered, (WIDTH - PADDING - rendered.get_width(), 10))
+            surf.blit(rendered, (WIDTH - 16 - rendered.get_width(), text_y))
         if led:
             pygame.draw.circle(surf, led, (WIDTH // 2, HEADER_H // 2), 5)
             pygame.draw.circle(surf, COLORS.bg, (WIDTH // 2, HEADER_H // 2), 6, 1)
@@ -56,12 +57,13 @@ class UI:
         next: str | None = None,
     ) -> None:
         """Split footer: A button label on left, B button label on right."""
-        pygame.draw.rect(surf, COLORS.panel, (0, FOOTER_Y, WIDTH, FOOTER_H))
+        pygame.draw.rect(surf, COLORS.chrome, (0, FOOTER_Y, WIDTH, FOOTER_H))
+        text_y = FOOTER_Y + (FOOTER_H - self.font_xs.get_height()) // 2
         if prev:
-            self.text(surf, "<", PADDING, FOOTER_Y + 10, COLORS.muted, self.font_xs)
+            self.text(surf, "<", 48, text_y, COLORS.muted, self.font_xs)
         if next:
             rendered = self.font_xs.render(">", True, COLORS.muted)
-            surf.blit(rendered, (WIDTH - PADDING - rendered.get_width(), FOOTER_Y + 10))
+            surf.blit(rendered, (WIDTH - 48 - rendered.get_width(), text_y))
 
     def progress_bar(
         self,

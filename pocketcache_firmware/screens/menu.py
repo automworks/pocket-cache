@@ -4,7 +4,7 @@ import math
 import pygame
 
 from .base import Screen
-from ..theme import COLORS, PADDING
+from ..theme import COLORS
 
 
 class AppMenuScreen(Screen):
@@ -48,37 +48,40 @@ class AppMenuScreen(Screen):
         state.active_app = "menu"
         ui.header(surf, "EXIT", "OPEN", state.led_color)
 
-        #ui.centered_text(surf, "POCKET", 42, COLORS.text, ui.font_lg)
-        #ui.centered_text(surf, "CACHE", 76, COLORS.accent, ui.font_lg)
-        #ui.centered_text(surf, f"PAGE {self.page + 1}/{self.page_count}", 112, COLORS.muted, ui.font_xs)
+        ui.text(surf, "/MENU", 16, 52, COLORS.muted, ui.font_xs)
 
         start = self.page * self.page_size
         visible = self.items[start:start + self.page_size]
 
-        y = 50
+        y = 78
         for offset, (title, app_id) in enumerate(visible):
             i = start + offset
             selected = i == self.index
-            x = 18
-            w = 204
-            h = 40
+            x = 16
+            w = 208
+            h = 48
+            item_bg = COLORS.chrome if selected else COLORS.panel
             fg = COLORS.text if selected else COLORS.muted
 
-            pygame.draw.rect(surf, COLORS.panel, (x, y, w, h), border_radius=8)
+            pygame.draw.rect(surf, item_bg, (x, y, w, h), border_radius=8)
             if selected:
                 pygame.draw.rect(surf, COLORS.hi, (x, y, w, h), 2, border_radius=8)
                 plus = ui.font.render("+", True, COLORS.hi)
-                surf.blit(plus, (x + w - PADDING - plus.get_width(), y + (h - plus.get_height()) // 2))
+                surf.blit(plus, (x + w - 14 - plus.get_width(), y + (h - plus.get_height()) // 2))
+                ui.text(surf, title.upper(), x + 14, y + (h - ui.font.get_height()) // 2, fg, ui.font)
+            else:
+                ui.text(surf, title.upper(), x + 16, y + (h - ui.font.get_height()) // 2, fg, ui.font)
 
-            ui.centered_text(surf, title.upper(), y + 8, fg, ui.font)
-            y += 50
+            y += 56
 
-        # Page dots
-        dot_y = 278
-        total_w = self.page_count * 14
+        # Page dots (8×8 squares)
+        dot_y = 255
+        dot_size = 8
+        gap = 10
+        total_w = self.page_count * (dot_size + gap) - gap
         dot_x = (240 - total_w) // 2
         for p in range(self.page_count):
             color = COLORS.accent if p == self.page else COLORS.muted
-            pygame.draw.circle(surf, color, (dot_x + p * 14, dot_y), 4)
+            pygame.draw.rect(surf, color, (dot_x + p * (dot_size + gap), dot_y, dot_size, dot_size), border_radius=2)
 
         ui.footer(surf, "PREV", "NEXT")
