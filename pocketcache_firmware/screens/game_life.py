@@ -20,7 +20,7 @@ class LifeScreen(Screen):
         if action=="select": self.running=not self.running; return "handled"
         return None
     def draw(self,surf,ui,state):
-        state.active_app="life"; ui.header(surf,"life",state.led_color)
+        state.active_app="life"; ui.header(surf, "EXIT", "RUN", state.led_color)
         if self.running and state.uptime_seconds % 1 == 0: self.step()
         ui.text(surf,"LIFE",16,44,COLORS.text,ui.font_lg); ui.text(surf,f"GEN {self.gen}",130,56,COLORS.muted,ui.font_xs)
         x0,y0,s=24,92,12
@@ -28,4 +28,4 @@ class LifeScreen(Screen):
             for c in range(self.w):
                 if self.grid[r][c]: pygame.draw.rect(surf,COLORS.ok,(x0+c*s,y0+r*s,s-2,s-2))
                 else: pygame.draw.rect(surf,COLORS.panel,(x0+c*s,y0+r*s,s-2,s-2))
-        ui.footer(surf,"X EXIT  Y RUN  A STEP  B NEW")
+        ui.footer(surf, "STEP", "NEW")

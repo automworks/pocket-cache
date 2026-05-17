@@ -18,7 +18,7 @@ class StatusScreen(Screen):
 
     def draw(self, surf: pygame.Surface, ui, state) -> None:
         state.active_app = "status"
-        ui.header(surf, "device status", state.led_color)
+        ui.header(surf, "BACK", led=state.led_color)
 
         battery_color = COLORS.bad if state.battery_pct <= 15 else COLORS.warn if state.battery_pct <= 30 else COLORS.ok
 
@@ -35,4 +35,4 @@ class StatusScreen(Screen):
         ui.text(surf, f"CLIENTS {state.clients}", 126, 258, COLORS.text, ui.font_xs)
         ui.text(surf, f"SERVED {state.packets_served}", 16, 280, COLORS.muted, ui.font_xs)
 
-        ui.footer(surf, "X BACK  A/B MENU")
+        ui.footer(surf, "MENU", "MENU")

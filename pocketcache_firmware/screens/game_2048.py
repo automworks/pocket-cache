@@ -119,7 +119,7 @@ class Game2048Screen(Screen):
 
     def draw(self, surf: pygame.Surface, ui, state) -> None:
         state.active_app = "game_2048"
-        ui.header(surf, "2048", state.led_color)
+        ui.header(surf, "EXIT", "UP/DN", state.led_color)
 
         ui.text(surf, "2048", 16, 44, COLORS.text, ui.font_lg)
         ui.text(surf, f"SCORE {self.score}", 16, 82, COLORS.muted, ui.font_xs)
@@ -149,4 +149,4 @@ class Game2048Screen(Screen):
                     rendered = font.render(str(value), True, COLORS.text)
                     surf.blit(rendered, (x + (cell - rendered.get_width()) // 2, y + (cell - rendered.get_height()) // 2))
 
-        ui.footer(surf, "X EXIT  Y UP/DN  A LEFT  B RIGHT")
+        ui.footer(surf, "LEFT", "RIGHT")

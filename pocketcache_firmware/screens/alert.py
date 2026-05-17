@@ -10,7 +10,7 @@ class AlertScreen(Screen):
     name = "alert"
 
     def draw(self, surf: pygame.Surface, ui, state) -> None:
-        ui.header(surf, "alert", state.led_color)
+        ui.header(surf, "BACK", "ACK", state.led_color)
         ui.centered_text(surf, "ALERT", 52, COLORS.bad, ui.font_lg)
 
         y = 104
@@ -37,4 +37,4 @@ class AlertScreen(Screen):
             ui.centered_text(surf, "ALL SYSTEMS", 132, COLORS.ok, ui.font_md)
             ui.centered_text(surf, "NOMINAL", 162, COLORS.ok, ui.font_md)
 
-        ui.footer(surf, "X BACK  Y ACK")
+        ui.footer(surf)

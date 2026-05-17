@@ -42,7 +42,7 @@ class MinesScreen(Screen):
         if action=="select": self.reveal(r,c); return "handled"
         return None
     def draw(self,surf,ui,state):
-        state.active_app="game_mines"; ui.header(surf,"mines",state.led_color)
+        state.active_app="game_mines"; ui.header(surf, "EXIT", "OPEN", state.led_color)
         ui.text(surf,"MINES",16,44,COLORS.text,ui.font_lg); ui.text(surf,self.msg,130,56,COLORS.accent,ui.font_xs)
         x0,y0,cell=24,104,32
         for r in range(self.h):
@@ -58,4 +58,4 @@ class MinesScreen(Screen):
                         n=self.count(r,c)
                         if n: surf.blit(ui.font.render(str(n),True,COLORS.text),(x+10,y+6))
                         else: pygame.draw.rect(surf,(20,25,28),(x,y,cell-3,cell-3),border_radius=5)
-        ui.footer(surf,"X EXIT  Y OPEN  A/B MOVE")
+        ui.footer(surf, "MOVE", "MOVE")

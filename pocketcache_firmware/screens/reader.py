@@ -104,7 +104,7 @@ class ReaderScreen(Screen):
 
     def draw(self, surf: pygame.Surface, ui, state) -> None:
         state.active_app = "reader"
-        ui.header(surf, "reader", state.led_color)
+        ui.header(surf, "EXIT", "SIZE", state.led_color)
 
         pages = self._wrap_pages(ui)
         self.page = max(0, min(self.page, len(pages) - 1))
@@ -128,4 +128,4 @@ class ReaderScreen(Screen):
         pct = int(((self.page + 1) / len(pages)) * 100)
         ui.progress_bar(surf, 12, 278, WIDTH - 24, 10, pct, COLORS.accent)
 
-        ui.footer(surf, "X EXIT  Y SIZE  A PREV  B NEXT")
+        ui.footer(surf, "PREV", "NEXT")

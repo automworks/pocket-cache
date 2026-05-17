@@ -1,22 +1,14 @@
 from __future__ import annotations
 
-import re
 import pygame
 
 from .theme import COLORS, WIDTH, HEADER_H, FOOTER_Y, FOOTER_H, PADDING
-
-# Maps physical button letters to display icons.
-# X = back/exit  Y = select/confirm  A = left/prev  B = right/next
-_BTN_ICONS: dict[str, str] = {"X": "x", "Y": "o", "A": "<", "B": ">"}
-_BTN_RE = re.compile(r"\b([XYAB])\b")
 
 
 class UI:
     def __init__(self) -> None:
         pygame.font.init()
 
-        # On the real 2" LCD, thin small fonts are hard to read. Keep everything
-        # bold/mono and avoid sizes below 14px.
         mono = "dejavusansmono,consolas,menlo,monospace"
         self.font_xs = pygame.font.SysFont(mono, 14, bold=True)
         self.font_sm = pygame.font.SysFont(mono, 15, bold=True)
@@ -33,17 +25,39 @@ class UI:
         rendered = font.render(text, True, color)
         surf.blit(rendered, ((WIDTH - rendered.get_width()) // 2, y))
 
-    def header(self, surf: pygame.Surface, title: str, led: tuple[int, int, int]) -> None:
+    def header(
+        self,
+        surf: pygame.Surface,
+        back: str | None = "EXIT",
+        select: str | None = None,
+        led: tuple[int, int, int] | None = None,
+    ) -> None:
+        """Split header: X button label on left, Y button label on right, LED dot center."""
         pygame.draw.rect(surf, COLORS.panel, (0, 0, WIDTH, HEADER_H))
-        self.text(surf, title.upper(), PADDING, 8, COLORS.text, self.font_xs)
-        pygame.draw.circle(surf, led, (WIDTH - 17, HEADER_H // 2), 7)
-        pygame.draw.circle(surf, COLORS.bg, (WIDTH - 17, HEADER_H // 2), 8, 1)
+        if back:
+            self.text(surf, f"x {back.upper()}", PADDING, 10, COLORS.muted, self.font_xs)
+        if select:
+            label = f"{select.upper()} o"
+            rendered = self.font_xs.render(label, True, COLORS.muted)
+            surf.blit(rendered, (WIDTH - PADDING - rendered.get_width(), 10))
+        if led:
+            pygame.draw.circle(surf, led, (WIDTH // 2, HEADER_H // 2), 5)
+            pygame.draw.circle(surf, COLORS.bg, (WIDTH // 2, HEADER_H // 2), 6, 1)
 
-    def footer(self, surf: pygame.Surface, label: str = "X BACK  Y SELECT") -> None:
+    def footer(
+        self,
+        surf: pygame.Surface,
+        prev: str | None = None,
+        next: str | None = None,
+    ) -> None:
+        """Split footer: A button label on left, B button label on right."""
         pygame.draw.rect(surf, COLORS.panel, (0, FOOTER_Y, WIDTH, FOOTER_H))
-        s = label.upper().replace("A/B", "<>").replace("B/Y", ">o").replace("X/Y", "xo")
-        display = _BTN_RE.sub(lambda m: _BTN_ICONS[m.group(1)], s)
-        self.centered_text(surf, display, FOOTER_Y + 9, COLORS.muted, self.font_xs)
+        if prev:
+            self.text(surf, f"< {prev.upper()}", PADDING, FOOTER_Y + 10, COLORS.muted, self.font_xs)
+        if next:
+            label = f"{next.upper()} >"
+            rendered = self.font_xs.render(label, True, COLORS.muted)
+            surf.blit(rendered, (WIDTH - PADDING - rendered.get_width(), FOOTER_Y + 10))
 
     def progress_bar(
         self,

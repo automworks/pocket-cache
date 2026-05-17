@@ -107,7 +107,7 @@ class SudokuScreen(Screen):
 
     def draw(self, surf: pygame.Surface, ui, state) -> None:
         state.active_app = "sudoku"
-        ui.header(surf, "sudoku", state.led_color)
+        ui.header(surf, "EXIT", "SET", state.led_color)
 
         ui.centered_text(surf, "SUDOKU", 42, COLORS.text, ui.font_md)
 
@@ -167,4 +167,4 @@ class SudokuScreen(Screen):
         ui.text(surf, self.message[:12], 14, 284, COLORS.text, ui.font_xs)
         ui.text(surf, f"MISS {self.mistakes}", 150, 284, COLORS.warn, ui.font_xs)
 
-        ui.footer(surf, "X EXIT  Y SET  A CELL  B NUM")
+        ui.footer(surf, "CELL", "NUM")

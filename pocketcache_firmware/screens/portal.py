@@ -31,7 +31,7 @@ class PortalScreen(Screen):
 
     def draw(self, surf: pygame.Surface, ui, state) -> None:
         state.active_app = "portal"
-        ui.header(surf, "connect", state.led_color)
+        ui.header(surf, "BACK", "MODE", state.led_color)
 
         if self.mode == "wifi":
             payload = f"WIFI:T:WPA;S:{state.ssid};P:{state.password};;"
@@ -61,4 +61,4 @@ class PortalScreen(Screen):
         for i in range(3):
             pygame.draw.circle(surf, COLORS.accent if i == self.index else COLORS.muted, (dot_x + i * 21, 292), 4)
 
-        ui.footer(surf, "X BACK  Y MODE  A/B QR")
+        ui.footer(surf, "QR", "QR")

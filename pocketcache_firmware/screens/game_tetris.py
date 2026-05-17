@@ -35,7 +35,7 @@ class TetrisScreen(Screen):
         if action=="select": self.rotate(); self.drop(); return "handled"
         return "handled" if action in ("left","right","select") else None
     def draw(self,surf,ui,state):
-        state.active_app="tetris"; ui.header(surf,"tetris",state.led_color); self.drop()
+        state.active_app="tetris"; ui.header(surf, "EXIT", "ROT", state.led_color); self.drop()
         ui.text(surf,"TETRIS",16,42,COLORS.text,ui.font_md); ui.text(surf,f"{self.score}",140,47,COLORS.muted,ui.font_xs)
         x0,y0,s=45,78,15
         active=set(self.cells())
@@ -43,4 +43,4 @@ class TetrisScreen(Screen):
             for c in range(self.w):
                 on=self.grid[r][c] or (c,r) in active
                 pygame.draw.rect(surf,COLORS.accent if on else COLORS.panel,(x0+c*s,y0+r*s,s-2,s-2))
-        ui.footer(surf,"X EXIT  Y ROT  A/B MOVE")
+        ui.footer(surf, "MOVE", "MOVE")

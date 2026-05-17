@@ -14,7 +14,7 @@ class BootScreen(Screen):
 
     def draw(self, surf: pygame.Surface, ui, state: DeviceState) -> None:
         state.active_app = "boot"
-        ui.header(surf, "boot loader", state.led_color)
+        ui.header(surf, back=None, led=state.led_color)
 
         elapsed = monotonic() - state.boot_started_at
         progress = max(0.0, min(1.0, elapsed / 3.5))
@@ -49,4 +49,4 @@ class BootScreen(Screen):
             ui.text(surf, f"{marker} {label}", 38, y, color, ui.font_xs)
             y += 18
 
-        ui.footer(surf, "BOOTING")
+        ui.footer(surf)

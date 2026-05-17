@@ -11,7 +11,7 @@ class AboutScreen(Screen):
 
     def draw(self, surf: pygame.Surface, ui, state) -> None:
         state.active_app = "about"
-        ui.header(surf, "about", state.led_color)
+        ui.header(surf, "BACK", led=state.led_color)
         ui.centered_text(surf, "POCKET", 52, COLORS.text, ui.font_lg)
         ui.centered_text(surf, "CACHE", 86, COLORS.accent, ui.font_lg)
         ui.centered_text(surf, "PRIVATE STASH", 130, COLORS.muted, ui.font_sm)
@@ -28,4 +28,4 @@ class AboutScreen(Screen):
             ui.centered_text(surf, line, y, COLORS.text, ui.font)
             y += 24
 
-        ui.footer(surf, "X BACK  Y SELECT  A LEFT  B RIGHT")
+        ui.footer(surf, "PREV", "NEXT")

@@ -49,7 +49,7 @@ class ChessScreen(Screen):
         if p=="r": return sr==r or sc==c
         return False
     def draw(self,surf,ui,state):
-        state.active_app="chess"; ui.header(surf,"chess",state.led_color)
+        state.active_app="chess"; ui.header(surf, "EXIT", "SEL", state.led_color)
         ui.text(surf,"CHESS BOT",16,42,COLORS.text,ui.font_md); ui.text(surf,self.msg[:12],16,66,COLORS.muted,ui.font_xs)
         x0,y0,s=24,92,24
         for r in range(8):
@@ -60,4 +60,4 @@ class ChessScreen(Screen):
                 pygame.draw.rect(surf,bg,(x0+c*s,y0+r*s,s-1,s-1))
                 p=self.board[r][c]
                 if p!=".": surf.blit(ui.font.render(p,True,COLORS.text if p.isupper() else COLORS.bad),(x0+c*s+6,y0+r*s+3))
-        ui.footer(surf,"X EXIT  Y SEL  A/B MOVE")
+        ui.footer(surf, "MOVE", "MOVE")

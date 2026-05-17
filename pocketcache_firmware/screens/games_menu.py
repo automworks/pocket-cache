@@ -50,7 +50,7 @@ class GamesMenuScreen(Screen):
 
     def draw(self, surf: pygame.Surface, ui, state) -> None:
         state.active_app = "games"
-        ui.header(surf, "play", state.led_color)
+        ui.header(surf, "BACK", "OPEN", state.led_color)
 
         start = self.page * self.page_size
         visible = self.items[start:start + self.page_size]
@@ -62,12 +62,11 @@ class GamesMenuScreen(Screen):
             x = 18
             w = 204
             h = 40
-            bg = (44, 54, 62) if selected else COLORS.panel
             fg = COLORS.text if selected else COLORS.muted
 
-            pygame.draw.rect(surf, bg, (x, y, w, h), border_radius=8)
+            pygame.draw.rect(surf, COLORS.panel, (x, y, w, h), border_radius=8)
             if selected:
-                pygame.draw.rect(surf, COLORS.accent, (x, y, 6, h), border_radius=3)
+                pygame.draw.rect(surf, COLORS.hi, (x, y, w, h), 2, border_radius=8)
 
             ui.centered_text(surf, title.upper(), y + 8, fg, ui.font)
             y += 50
@@ -80,4 +79,4 @@ class GamesMenuScreen(Screen):
             color = COLORS.accent if p == self.page else COLORS.muted
             pygame.draw.circle(surf, color, (dot_x + p * 14, dot_y), 4)
 
-        ui.footer(surf, "X BACK  Y OPEN  A PREV  B NEXT")
+        ui.footer(surf, "PREV", "NEXT")

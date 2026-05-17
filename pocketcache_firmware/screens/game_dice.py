@@ -12,8 +12,8 @@ class DiceScreen(Screen):
         if action=="select": self.roll=random.randint(1,self.sides[self.i]); return "handled"
         return None
     def draw(self,surf,ui,state):
-        state.active_app="dice"; ui.header(surf,"dice",state.led_color)
+        state.active_app="dice"; ui.header(surf, "EXIT", "ROLL", state.led_color)
         ui.centered_text(surf,f"D{self.sides[self.i]}",58,COLORS.muted,ui.font_md)
         ui.centered_text(surf,str(self.roll),112,COLORS.text,pygame.font.SysFont("dejavusansmono,consolas,monospace",72,bold=True))
         ui.centered_text(surf,"Y ROLL",220,COLORS.accent,ui.font_md)
-        ui.footer(surf,"X EXIT  Y ROLL  A/B DIE")
+        ui.footer(surf, "DIE", "DIE")

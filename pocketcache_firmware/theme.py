@@ -19,6 +19,7 @@ class Colors:
     warn: tuple[int, int, int] = (245, 190, 75)
     bad: tuple[int, int, int] = (245, 90, 90)
     accent: tuple[int, int, int] = (112, 220, 255)
+    hi: tuple[int, int, int] = (255, 128, 0)
     qr_bg: tuple[int, int, int] = (240, 240, 232)
     qr_fg: tuple[int, int, int] = (8, 10, 12)
 

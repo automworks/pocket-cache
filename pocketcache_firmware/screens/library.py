@@ -11,7 +11,7 @@ class LibraryScreen(Screen):
 
     def draw(self, surf: pygame.Surface, ui, state) -> None:
         state.active_app = "library"
-        ui.header(surf, "library status", state.led_color)
+        ui.header(surf, "BACK", led=state.led_color)
         ui.text(surf, "CONTENT", 16, 48, COLORS.text, ui.font_md)
 
         items = list(state.content.items())
@@ -24,4 +24,4 @@ class LibraryScreen(Screen):
         ui.text(surf, "KIWIX", 16, 286, COLORS.muted, ui.font_xs)
         ui.status_chip(surf, "kiwix", state.services["kiwix"], 82, 281, 104)
 
-        ui.footer(surf, "X BACK  Y SELECT  A LEFT  B RIGHT")
+        ui.footer(surf)

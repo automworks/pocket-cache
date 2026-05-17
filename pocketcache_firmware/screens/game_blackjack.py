@@ -39,9 +39,9 @@ class BlackjackScreen(Screen):
             txt="?" if c==0 else ("A" if c==11 else str(c))
             surf.blit(ui.font.render(txt,True,COLORS.text),(x+10,y+38)); x+=44
     def draw(self,surf,ui,state):
-        state.active_app="blackjack"; ui.header(surf,"blackjack",state.led_color)
+        state.active_app="blackjack"; ui.header(surf, "EXIT", "STAND", state.led_color)
         ui.text(surf,"BLACKJACK",16,44,COLORS.text,ui.font_md)
         self.draw_hand(surf,ui,"DEALER",self.dealer,82,hide=not self.done)
         self.draw_hand(surf,ui,"YOU",self.player,180)
         ui.text(surf,self.msg,16,276,COLORS.accent,ui.font_xs)
-        ui.footer(surf,"X EXIT  A HIT  B/Y STAND")
+        ui.footer(surf, "HIT", "STAND")

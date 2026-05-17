@@ -157,7 +157,10 @@ class SettingsScreen(Screen):
 
     def draw(self, surf: pygame.Surface, ui, state) -> None:
         state.active_app = "settings"
-        ui.header(surf, "settings", state.led_color)
+        if self.editing:
+            ui.header(surf, "DEL", "ADD", state.led_color)
+        else:
+            ui.header(surf, "BACK", "SELECT", state.led_color)
 
         ui.centered_text(surf, "DEVICE", 42, COLORS.text, ui.font_md)
         ui.centered_text(surf, "SETTINGS", 66, COLORS.accent, ui.font_md)
@@ -165,10 +168,9 @@ class SettingsScreen(Screen):
         y = 108
         for idx, (label, key) in enumerate(self.rows):
             selected = idx == self.row
-            bg = (48, 42, 36) if selected else COLORS.panel
-            pygame.draw.rect(surf, bg, (12, y, 216, 34), border_radius=7)
+            pygame.draw.rect(surf, COLORS.panel, (12, y, 216, 34), border_radius=7)
             if selected:
-                pygame.draw.rect(surf, COLORS.warn, (12, y, 5, 34), border_radius=3)
+                pygame.draw.rect(surf, COLORS.hi, (12, y, 216, 34), 2, border_radius=7)
 
             ui.text(surf, label, 22, y + 8, COLORS.text if selected else COLORS.muted, ui.font_xs)
 
@@ -190,6 +192,6 @@ class SettingsScreen(Screen):
         ui.centered_text(surf, f"{mode} • {self.message}", 278, COLORS.muted, ui.font_xs)
 
         if self.editing:
-            ui.footer(surf, "X DEL  Y ADD  A/B MOVE")
+            ui.footer(surf, "MOVE", "MOVE")
         else:
-            ui.footer(surf, "X BACK  Y SELECT  A/B ROW")
+            ui.footer(surf, "ROW", "ROW")
