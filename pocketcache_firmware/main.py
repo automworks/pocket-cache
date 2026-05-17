@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from time import monotonic
 
 from .adapters.pygame_adapter import PygameAdapter
@@ -125,7 +126,8 @@ def handle_actions(actions: list[str], state: DeviceState, router: ScreenRouter,
 
 
 def main() -> None:
-    adapter = PygameAdapter(scale=3)
+    scale = int(os.environ.get("POCKETCACHE_SCALE", "2"))
+    adapter = PygameAdapter(scale=scale)
     ui = UI()
     state = DeviceState()
     apply_runtime_config_to_state(state, load_config())
