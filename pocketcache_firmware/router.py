@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from .screens.boot import BootScreen
 from .screens.menu import AppMenuScreen
-from .screens.wifi import WifiScreen
 from .screens.portal import PortalScreen
 from .screens.status import StatusScreen
 from .screens.library import LibraryScreen
@@ -41,7 +40,6 @@ class ScreenRouter:
             "dice": DiceScreen(),
             "reader": ReaderScreen(),
             "portal": PortalScreen(),
-            "wifi": WifiScreen(),
             "status": StatusScreen(),
             "settings": SettingsScreen(),
         }
