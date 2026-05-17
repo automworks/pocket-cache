@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Pygame Simulator",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pocketcache_firmware.main",
+      "cwd": "${workspaceFolder}",
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "env": {
+        "PYGAME_HIDE_SUPPORT_PROMPT": "1"
+      }
+    }
+  ]
+}
