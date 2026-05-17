@@ -1,20 +1,25 @@
 from __future__ import annotations
 
+from pathlib import Path
 import pygame
 
 from .theme import COLORS, WIDTH, HEADER_H, FOOTER_Y, FOOTER_H, PADDING
+
+_FONT_PATH = str(Path(__file__).parent / "Pixel12x10Mono.ttf")
 
 
 class UI:
     def __init__(self) -> None:
         pygame.font.init()
 
-        mono = "dejavusansmono,consolas,menlo,monospace"
-        self.font_xs = pygame.font.SysFont(mono, 14, bold=True)
-        self.font_sm = pygame.font.SysFont(mono, 15, bold=True)
-        self.font = pygame.font.SysFont(mono, 17, bold=True)
-        self.font_md = pygame.font.SysFont(mono, 21, bold=True)
-        self.font_lg = pygame.font.SysFont(mono, 30, bold=True)
+        def f(size: int) -> pygame.font.Font:
+            return pygame.font.Font(_FONT_PATH, size)
+
+        self.font_xs = f(14)
+        self.font_sm = f(15)
+        self.font    = f(17)
+        self.font_md = f(21)
+        self.font_lg = f(30)
 
     def text(self, surf: pygame.Surface, text: str, x: int, y: int, color=COLORS.text, font=None) -> None:
         font = font or self.font
