@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Offline Map · pocket-cache</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/vendor/leaflet.css">
+</head>
+<body class="map-page">
+  <header class="topbar">
+    <a href="/">← Home</a>
+    <strong>Offline Map Demo</strong>
+    <span>local tiles</span>
+  </header>
+
+  <div id="map"></div>
+
+  <section class="sheet">
+    <h1>Offline Map</h1>
+    <p>This demo uses local PNG tiles from <code>/tiles/{z}/{x}/{y}.png</code>. The included tiles are placeholders so the portal works immediately. Replace them with real OpenStreetMap tiles later.</p>
+  </section>
+
+  <script src="/static/vendor/leaflet.js"></script>
+  <script src="/static/map.js"></script>
+</body>
+</html>

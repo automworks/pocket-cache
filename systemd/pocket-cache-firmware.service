@@ -1,0 +1,17 @@
+[Unit]
+Description=pocket-cache Display HAT firmware
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/opt/pocket-cache-firmware
+Environment=SDL_VIDEODRIVER=dummy
+Environment=POCKETCACHE_ROTATION=180
+Environment=POCKETCACHE_CONFIG=/etc/pocket-cache/firmware.json
+ExecStart=/opt/pocket-cache-firmware/.venv/bin/python -m pocketcache_firmware.displayhat_main
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

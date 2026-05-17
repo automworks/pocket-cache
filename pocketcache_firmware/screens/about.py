@@ -1,0 +1,31 @@
+from __future__ import annotations
+
+import pygame
+
+from .base import Screen
+from ..theme import COLORS
+
+
+class AboutScreen(Screen):
+    name = "about"
+
+    def draw(self, surf: pygame.Surface, ui, state) -> None:
+        state.active_app = "about"
+        ui.header(surf, "about", state.led_color)
+        ui.centered_text(surf, "POCKET", 52, COLORS.text, ui.font_lg)
+        ui.centered_text(surf, "CACHE", 86, COLORS.accent, ui.font_lg)
+        ui.centered_text(surf, "PRIVATE STASH", 130, COLORS.muted, ui.font_sm)
+        ui.centered_text(surf, "OF KNOWLEDGE", 152, COLORS.muted, ui.font_sm)
+
+        lines = [
+            "LOCAL HOTSPOT",
+            "OFFLINE LIBRARY",
+            "MAPS + REPAIR",
+            "BOOKS + GAMES",
+        ]
+        y = 198
+        for line in lines:
+            ui.centered_text(surf, line, y, COLORS.text, ui.font)
+            y += 24
+
+        ui.footer(surf, "X BACK  Y SELECT  A LEFT  B RIGHT")

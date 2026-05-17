@@ -1,0 +1,13 @@
+[project]
+name = "pocketcache-firmware"
+version = "0.1.0"
+description = "Pygame firmware simulator for pocket-cache Display HAT Mini"
+requires-python = ">=3.10"
+dependencies = [
+  "pygame>=2.5.0",
+  "qrcode[pil]>=7.4.2",
+  "Pillow>=10.0.0",
+]
+
+[project.scripts]
+pocketcache-firmware = "pocketcache_firmware.main:main"

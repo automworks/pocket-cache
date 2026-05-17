@@ -1,0 +1,153 @@
+:root {
+  color-scheme: dark;
+  --bg: #080a0c;
+  --panel: #14191d;
+  --panel-2: #1d252b;
+  --text: #eef1eb;
+  --muted: #a4aeac;
+  --accent: #70dcff;
+  --green: #47dc7d;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: radial-gradient(circle at top, #14202a 0, var(--bg) 42%);
+  color: var(--text);
+}
+
+.hero {
+  padding: 36px 20px 24px;
+}
+
+.hero.compact { padding-bottom: 8px; }
+
+.eyebrow {
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-size: 12px;
+  margin: 0 0 8px;
+}
+
+h1 {
+  font-size: 42px;
+  line-height: 1;
+  margin: 0 0 12px;
+  letter-spacing: -.04em;
+}
+
+h2 { margin: 0 0 8px; }
+
+.lede {
+  color: var(--muted);
+  font-size: 16px;
+  max-width: 40rem;
+}
+
+.grid {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.25);
+}
+
+.card.primary {
+  border-color: rgba(112,220,255,.55);
+}
+
+.card p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.icon {
+  font-size: 28px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+footer {
+  color: var(--muted);
+  padding: 16px 20px 28px;
+  font-size: 13px;
+}
+
+.topbar {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 12px;
+  background: rgba(8,10,12,.94);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.topbar a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.topbar span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.map-page {
+  height: 100vh;
+  overflow: hidden;
+}
+
+#map {
+  height: calc(100vh - 48px);
+  width: 100vw;
+  background: #101417;
+}
+
+.sheet {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  padding: 14px;
+  background: rgba(8,10,12,.88);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+
+.sheet h1 {
+  font-size: 20px;
+  margin: 0 0 6px;
+}
+
+.sheet p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.article {
+  padding: 16px 20px 40px;
+  line-height: 1.55;
+}
+
+code {
+  background: rgba(255,255,255,.1);
+  padding: 2px 5px;
+  border-radius: 5px;
+}
