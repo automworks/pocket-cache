@@ -37,7 +37,7 @@ class UI:
         if back:
             self.text(surf, f"x {back.upper()}", PADDING, 10, COLORS.muted, self.font_xs)
         if select:
-            label = f"{select.upper()} o"
+            label = f"{select.upper()} +"
             rendered = self.font_xs.render(label, True, COLORS.muted)
             surf.blit(rendered, (WIDTH - PADDING - rendered.get_width(), 10))
         if led:
@@ -53,10 +53,9 @@ class UI:
         """Split footer: A button label on left, B button label on right."""
         pygame.draw.rect(surf, COLORS.panel, (0, FOOTER_Y, WIDTH, FOOTER_H))
         if prev:
-            self.text(surf, f"< {prev.upper()}", PADDING, FOOTER_Y + 10, COLORS.muted, self.font_xs)
+            self.text(surf, "<", PADDING, FOOTER_Y + 10, COLORS.muted, self.font_xs)
         if next:
-            label = f"{next.upper()} >"
-            rendered = self.font_xs.render(label, True, COLORS.muted)
+            rendered = self.font_xs.render(">", True, COLORS.muted)
             surf.blit(rendered, (WIDTH - PADDING - rendered.get_width(), FOOTER_Y + 10))
 
     def progress_bar(

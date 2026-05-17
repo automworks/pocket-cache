@@ -4,7 +4,7 @@ import math
 import pygame
 
 from .base import Screen
-from ..theme import COLORS
+from ..theme import COLORS, PADDING
 
 
 class AppMenuScreen(Screen):
@@ -67,6 +67,8 @@ class AppMenuScreen(Screen):
             pygame.draw.rect(surf, COLORS.panel, (x, y, w, h), border_radius=8)
             if selected:
                 pygame.draw.rect(surf, COLORS.hi, (x, y, w, h), 2, border_radius=8)
+                plus = ui.font.render("+", True, COLORS.hi)
+                surf.blit(plus, (x + w - PADDING - plus.get_width(), y + (h - plus.get_height()) // 2))
 
             ui.centered_text(surf, title.upper(), y + 8, fg, ui.font)
             y += 50
