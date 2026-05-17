@@ -7,7 +7,7 @@ from .theme import COLORS, WIDTH, HEADER_H, FOOTER_Y, FOOTER_H, PADDING
 
 # Maps physical button letters to display icons.
 # X = back/exit  Y = select/confirm  A = left/prev  B = right/next
-_BTN_ICONS: dict[str, str] = {"X": "✕", "Y": "✓", "A": "←", "B": "→"}
+_BTN_ICONS: dict[str, str] = {"X": "x", "Y": "o", "A": "<", "B": ">"}
 _BTN_RE = re.compile(r"\b([XYAB])\b")
 
 
@@ -41,7 +41,8 @@ class UI:
 
     def footer(self, surf: pygame.Surface, label: str = "X BACK  Y SELECT") -> None:
         pygame.draw.rect(surf, COLORS.panel, (0, FOOTER_Y, WIDTH, FOOTER_H))
-        display = _BTN_RE.sub(lambda m: _BTN_ICONS[m.group(1)], label.upper())
+        s = label.upper().replace("A/B", "<>").replace("B/Y", ">o").replace("X/Y", "xo")
+        display = _BTN_RE.sub(lambda m: _BTN_ICONS[m.group(1)], s)
         self.centered_text(surf, display, FOOTER_Y + 9, COLORS.muted, self.font_xs)
 
     def progress_bar(
