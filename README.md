@@ -1,485 +1,295 @@
-# pocket-cache firmware v0
+# pocket-cache
 
-A 320×240 Pygame firmware simulator for the pocket-cache LCD experience, designed around Pimoroni Display HAT Mini constraints.
+A portable offline knowledge hub. Creates a local Wi-Fi hotspot so nearby phones and laptops can access maps, reference guides, and games — no internet required.
 
-## What this does
+Built around a Raspberry Pi Zero 2W and Pimoroni Display HAT Mini (2" IPS LCD, 4 buttons, RGB LED).
 
-This is not the full Raspberry Pi hotspot stack. It is the first firmware/UI layer for testing:
+---
 
-- Boot sequence
-- Wi-Fi join screen
-- Portal QR screen
-- Device status
-- Library/content status
-- Alert state
-- Four-button navigation
-- RGB LED state simulation
-- Simulated telemetry: battery, clients, uptime, storage, service health
+## What it does
 
-## Target hardware
+- **Hotspot** — broadcasts a WPA2 Wi-Fi network (no internet needed)
+- **Portal** — serves a web UI at `http://10.0.0.1` accessible from any connected device
+- **Offline maps** — Leaflet.js with local OpenStreetMap XYZ tiles
+- **Reference reader** — First Aid quick reference, Field Guide, and more
+- **Games** — Sudoku, 2048, Minesweeper, Blackjack, Chess, Tetris, Game of Life, Dice
+- **Device dashboard** — battery, CPU temp, memory, clients, uptime on the LCD
+- **Settings** — change SSID/password, restart hotspot, reboot from the device
 
-- Pimoroni Display HAT Mini
-- 320×240 display
-- 4 tactile buttons
-- RGB LED
+---
 
-## Install
+## Hardware
+
+| Component | Part |
+|---|---|
+| SBC | Raspberry Pi Zero 2W |
+| Display + buttons | Pimoroni Display HAT Mini (320×240 IPS, 4 buttons, RGB LED) |
+| Storage | MicroSD (16GB+ recommended; 64GB+ for content packs) |
+| Power | USB-C, 5V/2.5A |
+
+**Button layout (portrait orientation):**
+```
+┌─────────────┐
+│  X       Y  │  ← Back / Exit     Select / Confirm
+│             │
+│  A       B  │  ← Left / Prev     Right / Next
+└─────────────┘
+```
+
+Context labels for each button are shown in the header and footer bars on screen.
+
+**LED indicator:**
+
+| Color | Meaning |
+|---|---|
+| Cyan | Normal operation |
+| Green | Client connected |
+| Amber | Warning |
+| Red | Alert / service down |
+
+---
+
+## Project layout
+
+```
+pocket-cache/
+├── pocketcache_firmware/       # Device firmware (Python/Pygame)
+│   ├── adapters/
+│   │   ├── pygame_adapter.py           # Desktop simulator
+│   │   └── displayhatmini_adapter.py   # Real hardware
+│   ├── screens/                        # 18 screen implementations
+│   ├── data/                           # Plain-text reader documents
+│   ├── main.py                         # Simulator entry point
+│   ├── displayhat_main.py              # Hardware entry point
+│   ├── router.py                       # Screen navigation
+│   ├── state.py                        # Device state + telemetry
+│   ├── config_manager.py               # Config I/O, hostapd, reboot
+│   ├── theme.py                        # Colors, layout constants
+│   ├── ui.py                           # Shared drawing helpers
+│   ├── qr.py                           # QR code generation
+│   └── Pixel12x10Mono.ttf              # Bundled monospace font
+├── portal/                     # Web portal (served at 10.0.0.1)
+│   ├── server.py                       # HTTP server + /api/status
+│   ├── index.html                      # Home page
+│   ├── map.html                        # Offline Leaflet map
+│   ├── library.html                    # Reference content
+│   ├── status.html                     # Live device status
+│   ├── hello.html                      # Web server test page
+│   ├── static/                         # CSS, JS, Leaflet vendor
+│   └── tiles/                          # OSM map tiles (XYZ PNG)
+├── scripts/
+│   ├── setup-hotspot.sh                # One-command Pi hotspot setup
+│   ├── install-autoboot.sh             # Install firmware systemd service
+│   ├── install-portal-demo.sh          # Install portal systemd service
+│   └── uninstall-autoboot.sh           # Remove firmware service
+├── systemd/
+│   ├── pocket-cache-firmware.service
+│   └── pocket-cache-portal.service
+└── requirements.txt
+```
+
+---
+
+## Development setup (simulator)
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-```
-
-On Windows PowerShell:
-
-```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
-
-## Run simulator
-
-```bash
 python -m pocketcache_firmware.main
 ```
 
-## Simulator controls
+**VS Code:** use the included `launch.json` — press F5 to launch.
 
-| Key | Action |
-|---|---|
-| Left / A | Previous screen |
-| Right / D | Next screen |
-| Enter / Space | Select / acknowledge alert |
-| M / Esc | Menu / alert toggle |
-| B | Drain battery |
-| C | Cycle client count |
-| E | Toggle Kiwix error |
-| R | Reboot simulation |
-| Q | Quit |
+### Simulator controls
 
-## Screen flow
+| Key | Button | Action |
+|---|---|---|
+| `X` / `Backspace` / `Q` | X | Back / exit |
+| `Space` / `Return` | Y | Select |
+| `Left` / `A` | A | Left / previous |
+| `Right` / `D` | B | Right / next |
+| `-` | — | Drain battery (test alert) |
+| `C` | — | Cycle client count |
+| `E` | — | Toggle Kiwix error |
+| `R` | — | Simulate reboot |
 
-```text
-Boot → Join Wi-Fi → Open Portal → Status → Library → About
-```
-
-Alert state can be triggered by low battery or service error.
-
-## Hardware path
-
-The code is split so the Pygame simulator can later be replaced by a real Display HAT Mini adapter:
-
-```text
-pocketcache_firmware/
-├── adapters/
-│   ├── pygame_adapter.py
-│   └── displayhatmini_adapter.py
-├── screens/
-├── state.py
-├── theme.py
-├── qr.py
-└── main.py
-```
-
-`displayhatmini_adapter.py` is a scaffold, not yet active.
-
-
-## Run on Display HAT Mini hardware
-
-Use this on the Pi terminal/SSH session. It does not need a desktop window.
+### Simulator window size
 
 ```bash
-cd ~/pocket-cache-firmware-v0-displayhat
-source ~/.virtualenvs/displayhatmini/bin/activate
-pip install -r requirements.txt
-pip install displayhatmini
-python -m pocketcache_firmware.displayhat_main
+POCKETCACHE_SCALE=2 python -m pocketcache_firmware.main   # default
+POCKETCACHE_SCALE=3 python -m pocketcache_firmware.main   # larger
 ```
 
-Hardware buttons:
+---
 
-| Button | Action |
-|---|---|
-| A | Previous screen |
-| B | Next screen |
-| X | Select / acknowledge alert |
-| Y | Alert/menu |
+## Deploy on a Raspberry Pi
 
-The RGB LED mirrors status:
-- Green: healthy
-- Blue: client connected
-- Amber: warning
-- Red: critical/service down
+### 1. Set up the hotspot
 
-
-## v0-displayhat-polling note
-
-This build polls the Display HAT Mini buttons every frame instead of using
-`on_button_pressed()`. This avoids `RuntimeError: Failed to add edge detection`
-from `RPi.GPIO.add_event_detect()` on setups where callback-based GPIO edge
-detection is unavailable.
-
-
-## v0 portrait update
-
-This build uses a portrait firmware canvas:
-
-- Logical UI: 240×320
-- Physical LCD: 320×240
-- The Display HAT adapter rotates the portrait canvas onto the physical screen.
-- Small labels now use bold monospace fonts.
-- Footer/header labels are uppercase and heavier for the 2" LCD.
-
-Run:
+Run once after flashing a fresh Pi OS image:
 
 ```bash
-python -m pocketcache_firmware.displayhat_main
+sudo ./scripts/setup-hotspot.sh
 ```
 
-If the display is rotated the wrong way, try:
+This installs and configures `hostapd`, `dnsmasq`, static IP (`10.0.0.1`), `openssh-server`, and iptables rules, then reboots.
 
-```bash
-POCKETCACHE_ROTATION=ccw python -m pocketcache_firmware.displayhat_main
-POCKETCACHE_ROTATION=180 python -m pocketcache_firmware.displayhat_main
-```
-
-
-## v0 Sudoku app
-
-This build adds a working Sudoku app to the firmware carousel.
-
-Sudoku uses only the four Display HAT Mini buttons:
-
-| Button | Action |
-|---|---|
-| A | Move to next editable cell |
-| B | Cycle selected number 1–9 |
-| X | Set number / clear same number |
-| Y | Exit Sudoku back to firmware |
-
-Notes:
-- Given puzzle numbers are locked.
-- Correct entries show green.
-- Incorrect entries show amber and increment `MISS`.
-- The app runs inside the same 240×320 portrait firmware canvas.
-
-
-## v0 Reader + unified controls update
-
-This build adds a simple firmware e-reader and standardizes the four hardware buttons.
-
-Global controls:
-
-| Button | Action |
-|---|---|
-| A | Back |
-| B | Select |
-| X | Left / previous |
-| Y | Right / next |
-
-Sudoku controls:
-
-| Button | Action |
-|---|---|
-| A | Exit Sudoku |
-| B | Set number / clear same number |
-| X | Next editable cell |
-| Y | Cycle number 1–9 |
-
-Reader controls:
-
-| Button | Action |
-|---|---|
-| A | Exit Reader |
-| B | Toggle text size |
-| X | Previous page |
-| Y | Next page |
-
-The reader currently includes a built-in sample text. It is intentionally simple:
-large bold monospace text, page-by-page navigation, and a progress bar.
-
-
-## v0 rotated button mapping update
-
-This build assumes the device is held in portrait orientation with the buttons arranged:
-
-```text
-Top row:     X   Y
-Bottom row:  A   B
-```
-
-Firmware controls are now:
-
-| Physical button | Action |
-|---|---|
-| X | Back / exit current app |
-| Y | Select |
-| A | Left / previous |
-| B | Right / next |
-
-The Display HAT renderer now defaults to `POCKETCACHE_ROTATION=180`.
-
-Run:
-
-```bash
-python -m pocketcache_firmware.displayhat_main
-```
-
-If you need to override rotation:
-
-```bash
-POCKETCACHE_ROTATION=cw python -m pocketcache_firmware.displayhat_main
-POCKETCACHE_ROTATION=ccw python -m pocketcache_firmware.displayhat_main
-POCKETCACHE_ROTATION=180 python -m pocketcache_firmware.displayhat_main
-```
-
-
-## v0 app menu update
-
-The firmware now uses an app menu instead of a linear carousel.
-
-Apps:
-- About
-- Library
-- Play: Sudoku
-- Read: simple e-reader
-- Connect: Portal / Wi-Fi QR
-- Status: device info, battery, CPU load, memory, Wi-Fi, clients, served counter
-
-Button mapping remains:
-
-| Physical button | Action |
-|---|---|
-| X | Back |
-| Y | Select / open |
-| A | Left / previous menu item |
-| B | Right / next menu item |
-
-LED color now changes by app:
-- Menu: blue
-- About: purple
-- Library: green
-- Play/Sudoku: pink
-- Reader: yellow
-- Connect: cyan-blue
-- Status: cyan
-- Alerts still override app colors with amber/red.
-
-
-## v0 Settings + autoboot update
-
-New Settings app:
-- Change pocket-cache SSID
-- Change Wi-Fi password
-- Save Wi-Fi config
-- Restart hotspot services
-- Restart the Pi
-
-Settings controls:
-
-| Button | Action |
-|---|---|
-| X | Back / delete while editing |
-| Y | Select / add character while editing |
-| A | Previous row / move cursor left |
-| B | Next row / move cursor right |
-
-Notes:
-- WPA2 passwords must be at least 8 characters.
-- The Settings app writes `/etc/pocket-cache/firmware.json`.
-- It also writes a conservative `/etc/hostapd/hostapd.conf` and restarts `hostapd` + `dnsmasq`.
-- If run without permission, simulator mode still updates runtime config where possible.
-
-## Auto-boot firmware on the Pi
-
-From the project root on the Pi:
+### 2. Install the firmware
 
 ```bash
 sudo ./scripts/install-autoboot.sh
 ```
 
-Check logs:
+Copies the firmware to `/opt/pocket-cache-firmware`, creates a venv, installs dependencies, and enables the `pocket-cache-firmware` systemd service.
 
-```bash
-sudo journalctl -u pocket-cache-firmware -f
-```
-
-Disable autoboot:
-
-```bash
-sudo ./scripts/uninstall-autoboot.sh
-```
-
-The systemd service runs:
-
-```bash
-python -m pocketcache_firmware.displayhat_main
-```
-
-with:
-
-```bash
-SDL_VIDEODRIVER=dummy
-POCKETCACHE_ROTATION=180
-POCKETCACHE_CONFIG=/etc/pocket-cache/firmware.json
-```
-
-
-## v0 paged launcher update
-
-The app launcher now:
-- Removes app description text.
-- Shows four app buttons per page.
-- Adds `PAGE n/n` indicator.
-- Adds page dots.
-- Keeps `A` and `B` as previous/next item navigation.
-- Keeps `Y` as open/select and `X` as back.
-
-
-## v0 portal + offline map demo
-
-This build adds a phone-accessible web portal under `portal/`.
-
-Pages:
-- `/` home portal
-- `/map.html` offline map demo
-- `/library.html` sample reference content
-- `/status.html` simple device/status page
-
-The map demo serves local image tiles from:
-
-```text
-/tiles/{z}/{x}/{y}.png
-```
-
-The included tiles are generated placeholders so the demo works immediately.
-Later, replace `portal/tiles/` with real regional OpenStreetMap tiles.
-
-### Run manually
-
-From the project root:
-
-```bash
-sudo ./scripts/run-portal-demo.sh
-```
-
-Then from a phone connected to the pocket-cache Wi-Fi:
-
-```text
-http://10.0.0.1
-```
-
-### Install as auto-starting portal service
+### 3. Install the portal
 
 ```bash
 sudo ./scripts/install-portal-demo.sh
 ```
 
-Check logs:
+Enables the `pocket-cache-portal` systemd service (runs `portal/server.py` on port 80).
+
+### Check logs
 
 ```bash
+sudo journalctl -u pocket-cache-firmware -f
 sudo journalctl -u pocket-cache-portal -f
 ```
 
-### Real map tile path later
+### Uninstall
 
-For real offline maps, generate or copy tiles into:
-
-```text
-portal/tiles/{z}/{x}/{y}.png
+```bash
+sudo ./scripts/uninstall-autoboot.sh
 ```
 
-Recommended v0 real-map formats:
-- XYZ raster tiles as `.png` or `.jpg`
-- Later: MBTiles with a lightweight tile server
+---
 
+## Run firmware on hardware (manual)
 
-## v0 Games submenu update
+```bash
+pip install displayhatmini
+python -m pocketcache_firmware.displayhat_main
+```
 
-The Play app now opens a game submenu instead of launching Sudoku directly.
+Environment variables:
 
-Games:
-- Sudoku
-- 2048
-- Snake placeholder
-- Mines placeholder
+| Variable | Default | Description |
+|---|---|---|
+| `POCKETCACHE_ROTATION` | `180` | Display rotation: `180`, `cw`, `ccw` |
+| `POCKETCACHE_CONFIG` | `/etc/pocket-cache/firmware.json` | Config file path |
+| `SDL_VIDEODRIVER` | `dummy` | Set by systemd service (headless) |
 
-Global controls remain:
+If the display is upside-down:
 
-| Button | Action |
+```bash
+POCKETCACHE_ROTATION=cw python -m pocketcache_firmware.displayhat_main
+```
+
+---
+
+## Portal
+
+Served at `http://10.0.0.1` when connected to the PocketCache Wi-Fi network.
+
+| Page | URL | Description |
+|---|---|---|
+| Home | `/` | Card grid navigation |
+| Map | `/map.html` | Offline Leaflet map |
+| Library | `/library.html` | Reference content |
+| Status | `/status.html` | Live device info |
+| Test | `/hello.html` | Web server connectivity test |
+| API | `/api/status` | JSON: uptime, temp, disk, clients |
+
+### Map tiles
+
+Tiles are served from `portal/tiles/{z}/{x}/{y}.png` (standard XYZ format). Zoom levels 0–2 (21 world tiles) are included in the repo. For regional detail, add higher-zoom tiles:
+
+```bash
+# Example: download tiles for a region using a tool like tilesdownloader or osmium
+# Place at portal/tiles/{z}/{x}/{y}.png
+```
+
+Recommended formats: XYZ PNG tiles. For large content packs, consider MBTiles + a lightweight tile server.
+
+---
+
+## Settings (on-device)
+
+Navigate to **Settings** from the main menu.
+
+| Row | Action |
 |---|---|
-| X | Back |
-| Y | Select / open |
-| A | Left / previous |
-| B | Right / next |
+| SSID | Edit the hotspot network name |
+| PASS | Edit the WPA2 password (8+ chars) |
+| LED | Toggle RGB LED on/off |
+| SAVE WIFI | Write config + restart hotspot |
+| RESTART PI | Reboot the device |
 
-2048 controls:
+Config is stored at `/etc/pocket-cache/firmware.json`.
 
-| Button | Action |
+---
+
+## Reader documents
+
+Documents live in `pocketcache_firmware/data/` as plain `.txt` files. Currently included:
+
+| File | Contents |
 |---|---|
-| X | Exit to Play menu |
-| Y | Move up/down alternating |
-| A | Move left |
-| B | Move right |
+| `field_guide.txt` | Device guide: connecting, controls, features, troubleshooting |
+| `first_aid.txt` | CPR, choking, bleeding, burns, shock, seizure, poisoning, heat/cold |
 
-2048 is intentionally lightweight: a 4×4 grid, no animation, no assets, and minimal redraw logic.
+To add a document, drop a `.txt` file in `data/` and add an entry to the `_DOCS` list in `screens/reader.py`.
 
+---
 
-## v0 expanded offline game suite
+## Screens
 
-Added low-processing-power games to the Play submenu:
+| Screen | Description |
+|---|---|
+| Boot | Animated startup with progress bar and service checklist |
+| Menu | Paged app launcher (4 items/page) |
+| Library | Content module status (medical, maps, wikipedia, books, games) |
+| Connect | QR codes: Hello test, Portal URL, Wi-Fi join |
+| Status | Battery, CPU load, memory, Wi-Fi, temp, clients, uptime |
+| Settings | SSID/password editor, LED toggle, hotspot save, reboot |
+| Reader | Paged e-reader with two documents and font size toggle |
+| About | Device branding and tagline |
+| Alert | Low battery / service failure overlay |
+| Games → | Paged games menu |
+| Sudoku | 9×9 puzzle with mistake counter |
+| 2048 | Tile merge game (4-button adaptation) |
+| Minesweeper | 6×6 grid |
+| Blackjack | Dealer simulation |
+| Chess | Micro chess with random bot |
+| Tetris | Piece rotation and line clear |
+| Game of Life | Conway's cellular automaton |
+| Dice | Polyhedral dice roller (D4–D100) |
 
-- Minesweeper
-- Blackjack
-- Chess with a tiny random bot
-- Tetris
-- Game of Life
-- D20 / polyhedral dice roller
+---
 
-These are intentionally lightweight firmware games:
-- no assets
-- no sound
-- minimal animation
-- all controlled with X/Y/A/B
-- designed for the 240×320 portrait display
+## Roadmap
 
-Notes:
-- Chess is a small pseudo-legal "micro chess" demo, not a full chess engine.
-- 2048 uses a four-button compromise where Y alternates up/down.
-- Tetris auto-drops on redraw; Y rotates and drops.
+### v0.1
+- [ ] Dev Mode — toggle hotspot off, join home WiFi for SSH access and `git pull`
+- [ ] More reader content (survival, repair, navigation reference)
+- [ ] Higher-zoom regional map tiles + tile download script
 
+### v0.2
+- [ ] Kiwix integration — serve offline Wikipedia / reference ZIM files
+- [ ] Portal content indexing and search
+- [ ] Battery monitoring (hardware UPS module)
 
-## v0 aligned game submenu update
+### Future
+- [ ] Content sync over USB
+- [ ] Multi-language support
+- [ ] Accessibility: high-contrast mode
+- [ ] Tests and CI
 
-The Play submenu now uses the same layout as the updated home app launcher:
-- no title/logo block above the list
-- list starts at `y = 50`
-- button size `204 × 40`
-- row spacing `50`
-- four items per page
-- page dots at `y = 278`
-- same selected-state accent rail
+---
 
+## License
 
-## v0 boot, LED, and Connect update
-
-Changes:
-- Added boot loader screen animation.
-- Added rainbow RGB LED cycle during hardware adapter startup.
-- Added Settings → LED ON/OFF.
-- Moved About to menu slot 6.
-- Tightened Connect screen copy to avoid overflow.
-- Added Connect → Hello Test QR for `/hello.html`.
-- Added `portal/hello.html` as a simple phone-accessible web server test page.
-
-Connect modes:
-- Hello Test: `http://10.0.0.1/hello.html`
-- Portal: `http://10.0.0.1`
-- Wi-Fi: QR join payload
-
-LED behavior:
-- Rainbow cycle runs at adapter startup.
-- App LED colors continue after boot.
-- Settings can disable app-controlled LEDs by setting `led_enabled = false`.
+MIT. Map tiles sourced from OpenStreetMap contributors (ODbL).
+Font: Pixel12x10Mono (OFL) by Corne2Plum3.

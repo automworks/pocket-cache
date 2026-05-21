@@ -1,7 +1,8 @@
 [project]
 name = "pocketcache-firmware"
 version = "0.1.0"
-description = "Pygame firmware simulator for pocket-cache Display HAT Mini"
+description = "Offline Wi-Fi hotspot firmware for Raspberry Pi Zero 2W + Pimoroni Display HAT Mini"
+readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
   "pygame>=2.5.0",
@@ -11,3 +12,4 @@ dependencies = [
 
 [project.scripts]
 pocketcache-firmware = "pocketcache_firmware.main:main"
+pocketcache-firmware-hw = "pocketcache_firmware.displayhat_main:main"
