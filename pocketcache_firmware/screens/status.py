@@ -27,7 +27,7 @@ class StatusScreen(Screen):
         ui.text(surf, f"IP {state.ip_address}", 118, 76, COLORS.muted, ui.font_xs)
 
         self._bar(surf, ui, "BATTERY", state.battery_pct, 16, 106, battery_color)
-        self._bar(surf, ui, "CPU LOAD", state.cpu_load_pct, 16, 142, COLORS.accent)
+        self._bar(surf, ui, "CPU LOAD", state.cpu_load_pct, 16, 142, state.app_accent_color)
         self._bar(surf, ui, "MEMORY", state.memory_pct, 16, 178, COLORS.warn)
         self._bar(surf, ui, "WIFI", state.wifi_signal_pct, 16, 214, COLORS.ok)
 

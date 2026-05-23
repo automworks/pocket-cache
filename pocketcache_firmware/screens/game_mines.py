@@ -43,7 +43,7 @@ class MinesScreen(Screen):
         return None
     def draw(self,surf,ui,state):
         state.active_app="game_mines"; ui.header(surf, "EXIT", "OPEN", state.led_color)
-        ui.text(surf,"MINES",16,44,COLORS.text,ui.font_lg); ui.text(surf,self.msg,130,56,COLORS.accent,ui.font_xs)
+        ui.text(surf,"MINES",16,44,COLORS.text,ui.font_lg); ui.text(surf,self.msg,130,56,state.app_accent_color,ui.font_xs)
         x0,y0,cell=24,104,32
         for r in range(self.h):
             for c in range(self.w):

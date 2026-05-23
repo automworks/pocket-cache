@@ -162,15 +162,16 @@ class SettingsScreen(Screen):
         else:
             ui.header(surf, "BACK", "SELECT", state.led_color)
 
+        accent = state.app_accent_color
         ui.centered_text(surf, "DEVICE", 42, COLORS.text, ui.font_md)
-        ui.centered_text(surf, "SETTINGS", 66, COLORS.accent, ui.font_md)
+        ui.centered_text(surf, "SETTINGS", 66, accent, ui.font_md)
 
         y = 108
         for idx, (label, key) in enumerate(self.rows):
             selected = idx == self.row
             pygame.draw.rect(surf, COLORS.panel, (12, y, 216, 34), border_radius=7)
             if selected:
-                pygame.draw.rect(surf, COLORS.hi, (12, y, 216, 34), 2, border_radius=7)
+                pygame.draw.rect(surf, accent, (12, y, 216, 34), 2, border_radius=7)
 
             ui.text(surf, label, 22, y + 8, COLORS.text if selected else COLORS.muted, ui.font_xs)
 
@@ -182,7 +183,7 @@ class SettingsScreen(Screen):
 
                 if selected and self.editing:
                     cx = 100 + min(self.cursor, 12) * 9
-                    pygame.draw.rect(surf, COLORS.accent, (cx, y + 27, 8, 3))
+                    pygame.draw.rect(surf, accent, (cx, y + 27, 8, 3))
             elif key == "led":
                 value = "ON" if self.config.led_enabled else "OFF"
                 ui.text(surf, value, 150, y + 8, COLORS.ok if self.config.led_enabled else COLORS.muted, ui.font_xs)

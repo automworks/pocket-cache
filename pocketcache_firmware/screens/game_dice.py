@@ -15,5 +15,5 @@ class DiceScreen(Screen):
         state.active_app="dice"; ui.header(surf, "EXIT", "ROLL", state.led_color)
         ui.centered_text(surf,f"D{self.sides[self.i]}",58,COLORS.muted,ui.font_md)
         ui.centered_text(surf,str(self.roll),112,COLORS.text,pygame.font.SysFont("dejavusansmono,consolas,monospace",72,bold=True))
-        ui.centered_text(surf,"Y ROLL",220,COLORS.accent,ui.font_md)
+        ui.centered_text(surf,"Y ROLL",220,state.app_accent_color,ui.font_md)
         ui.footer(surf, "DIE", "DIE")

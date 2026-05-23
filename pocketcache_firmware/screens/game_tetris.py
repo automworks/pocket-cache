@@ -42,5 +42,5 @@ class TetrisScreen(Screen):
         for r in range(self.h):
             for c in range(self.w):
                 on=self.grid[r][c] or (c,r) in active
-                pygame.draw.rect(surf,COLORS.accent if on else COLORS.panel,(x0+c*s,y0+r*s,s-2,s-2))
+                pygame.draw.rect(surf,state.app_accent_color if on else COLORS.panel,(x0+c*s,y0+r*s,s-2,s-2))
         ui.footer(surf, "MOVE", "MOVE")

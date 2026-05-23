@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from time import monotonic
+from .theme import APP_COLORS
 
 
 @dataclass
@@ -105,6 +106,11 @@ class DeviceState:
             "settings": (255, 120, 40),
         }
         return app_leds.get(self.active_app, (0, 255, 80))
+
+    @property
+    def app_accent_color(self) -> tuple[int, int, int]:
+        """Return the UI accent color for the current app (Figma design system)."""
+        return APP_COLORS.get(self.active_app, (255, 115, 0))
 
     def reboot(self) -> None:
         self.booting = True

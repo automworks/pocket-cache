@@ -123,7 +123,7 @@ class Game2048Screen(Screen):
 
         ui.text(surf, "2048", 16, 44, COLORS.text, ui.font_lg)
         ui.text(surf, f"SCORE {self.score}", 16, 82, COLORS.muted, ui.font_xs)
-        ui.text(surf, self.message[:12], 134, 82, COLORS.accent, ui.font_xs)
+        ui.text(surf, self.message[:12], 134, 82, state.app_accent_color, ui.font_xs)
 
         board_x = 16
         board_y = 112

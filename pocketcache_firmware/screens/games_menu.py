@@ -4,7 +4,7 @@ import math
 import pygame
 
 from .base import Screen
-from ..theme import COLORS
+from ..theme import COLORS, APP_COLORS
 
 
 class GamesMenuScreen(Screen):
@@ -57,6 +57,8 @@ class GamesMenuScreen(Screen):
         start = self.page * self.page_size
         visible = self.items[start:start + self.page_size]
 
+        accent = APP_COLORS.get("games", COLORS.hi)
+
         y = 78
         for offset, (title, app_id) in enumerate(visible):
             i = start + offset
@@ -69,8 +71,8 @@ class GamesMenuScreen(Screen):
 
             pygame.draw.rect(surf, item_bg, (x, y, w, h), border_radius=8)
             if selected:
-                pygame.draw.rect(surf, COLORS.hi, (x, y, w, h), 2, border_radius=8)
-                plus = ui.font.render("+", True, COLORS.hi)
+                pygame.draw.rect(surf, accent, (x, y, w, h), 2, border_radius=8)
+                plus = ui.font.render("+", True, accent)
                 surf.blit(plus, (x + w - 14 - plus.get_width(), y + (h - plus.get_height()) // 2))
                 ui.text(surf, title.upper(), x + 14, y + (h - ui.font.get_height()) // 2, fg, ui.font)
             else:
@@ -85,7 +87,7 @@ class GamesMenuScreen(Screen):
         total_w = self.page_count * (dot_size + gap) - gap
         dot_x = (240 - total_w) // 2
         for p in range(self.page_count):
-            color = COLORS.accent if p == self.page else COLORS.muted
+            color = accent if p == self.page else COLORS.muted
             pygame.draw.rect(surf, color, (dot_x + p * (dot_size + gap), dot_y, dot_size, dot_size), border_radius=2)
 
         ui.footer(surf, "PREV", "NEXT")

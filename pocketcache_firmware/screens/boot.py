@@ -18,9 +18,10 @@ class BootScreen(Screen):
 
         elapsed = monotonic() - state.boot_started_at
         progress = max(0.0, min(1.0, elapsed / 3.5))
+        accent = state.app_accent_color
 
         ui.centered_text(surf, "BOOT", 44, COLORS.text, ui.font_lg)
-        ui.centered_text(surf, "POCKET-CACHE", 82, COLORS.accent, ui.font_md)
+        ui.centered_text(surf, "POCKET-CACHE", 82, accent, ui.font_md)
 
         # Spinner ring
         cx, cy = WIDTH // 2, 142
@@ -28,13 +29,13 @@ class BootScreen(Screen):
         for i in range(12):
             angle = elapsed * 6 + i * (math.tau / 12)
             alpha_rank = (i + int(elapsed * 12)) % 12
-            color = COLORS.accent if alpha_rank > 7 else COLORS.muted
+            color = accent if alpha_rank > 7 else COLORS.muted
             x = int(cx + math.cos(angle) * radius)
             y = int(cy + math.sin(angle) * radius)
             pygame.draw.circle(surf, color, (x, y), 3)
 
         # Progress bar
-        ui.progress_bar(surf, 28, 186, 184, 14, int(progress * 100), COLORS.accent)
+        ui.progress_bar(surf, 28, 186, 184, 14, int(progress * 100), accent)
 
         steps = [
             ("HOTSPOT", elapsed > 0.5),

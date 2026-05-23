@@ -116,11 +116,12 @@ class ReaderScreen(Screen):
         ui.centered_text(surf, f"PAGE {self.page + 1}/{len(pages)}", 62, COLORS.muted, ui.font_xs)
 
         # doc dots
+        accent = state.app_accent_color
         dot_size, gap = 6, 8
         total_w = len(_DOCS) * (dot_size + gap) - gap
         dot_x = (WIDTH - total_w) // 2
         for i in range(len(_DOCS)):
-            color = COLORS.accent if i == self.doc_index else COLORS.muted
+            color = accent if i == self.doc_index else COLORS.muted
             pygame.draw.rect(surf, color, (dot_x + i * (dot_size + gap), 76, dot_size, dot_size), border_radius=2)
 
         y = 92
@@ -135,6 +136,6 @@ class ReaderScreen(Screen):
             y += line_h
 
         pct = int(((self.page + 1) / len(pages)) * 100)
-        ui.progress_bar(surf, 12, 262, WIDTH - 24, 10, pct, COLORS.accent)
+        ui.progress_bar(surf, 12, 262, WIDTH - 24, 10, pct, accent)
 
         ui.footer(surf, "PREV", "NEXT")
