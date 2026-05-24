@@ -65,11 +65,27 @@ WantedBy=multi-user.target
 SERVICE
 echo "Wrote uap0-create.service"
 
+# ── dhcpcd: prevent it from claiming uap0 and clearing the static IP ─────────
+DHCPCD_CONF="/etc/dhcpcd.conf"
+if ! grep -q "denyinterfaces ${AP_IFACE}" "${DHCPCD_CONF}" 2>/dev/null; then
+  echo "denyinterfaces ${AP_IFACE}" >> "${DHCPCD_CONF}"
+  echo "Added denyinterfaces ${AP_IFACE} to ${DHCPCD_CONF}"
+fi
+
+# ── dnsmasq drop-in: wait for uap0 to exist before starting ──────────────────
+# Bind by listen-address (more reliable than interface= for virtual interfaces)
+mkdir -p /etc/systemd/system/dnsmasq.service.d
+cat > /etc/systemd/system/dnsmasq.service.d/wait-for-uap0.conf <<DROPIN
+[Unit]
+After=uap0-create.service
+Requires=uap0-create.service
+DROPIN
+
 # ── dnsmasq: DHCP + captive-portal DNS spoofing on uap0 only ─────────────────
 cp /etc/dnsmasq.conf /etc/dnsmasq.conf.bak 2>/dev/null || true
 cat > /etc/dnsmasq.conf <<DNSMASQ
 # pocket-cache dev hotspot
-interface=${AP_IFACE}
+listen-address=${HOTSPOT_IP}
 bind-interfaces
 dhcp-range=${DHCP_START},${DHCP_END},${DHCP_LEASE}
 # Redirect all DNS queries to the device (captive portal behaviour)

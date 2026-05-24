@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import os
 from dataclasses import dataclass, field
 from time import monotonic
@@ -88,6 +89,9 @@ class DeviceState:
             return (255, 0, 0)
         if not self.all_content_ok or self.battery_pct <= 30:
             return (255, 160, 0)
+        if self.active_app == "screensaver":
+            v = int((math.sin(monotonic() * math.pi) + 1) / 2 * 160)
+            return (v, v, v)
 
         app_leds = {
             "menu": (80, 80, 255),

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from time import monotonic
+
 from .screens.boot import BootScreen
 from .screens.menu import AppMenuScreen
 from .screens.portal import PortalScreen
@@ -18,12 +20,15 @@ from .screens.reader import ReaderScreen
 from .screens.about import AboutScreen
 from .screens.alert import AlertScreen
 from .screens.settings import SettingsScreen
+from .screens.screensaver import ScreensaverScreen
 
 
 class ScreenRouter:
-    def __init__(self, auto_cycle_seconds: float = 9.0) -> None:
+    def __init__(self, auto_cycle_seconds: float = 9.0, screensaver_timeout: float = 30.0) -> None:
         self.boot_screen = BootScreen()
         self.alert_screen = AlertScreen()
+        self.screensaver_screen = ScreensaverScreen()
+        self.screensaver_timeout = screensaver_timeout
         self.menu_screen = AppMenuScreen()
         self.screens = {
             "menu": self.menu_screen,
@@ -44,7 +49,7 @@ class ScreenRouter:
             "settings": SettingsScreen(),
         }
         self.active = "menu"
-        self.last_input_at = 0
+        self.last_input_at = monotonic()
         self.auto_cycle_seconds = auto_cycle_seconds
         self.paused = True
         self.force_alert = False
@@ -56,6 +61,8 @@ class ScreenRouter:
         if self.force_alert or (state.has_alert and not state.alert_acknowledged):
             state.active_app = "alert"
             return self.alert_screen
+        if monotonic() - self.last_input_at > self.screensaver_timeout:
+            return self.screensaver_screen
         return self.screens[self.active]
 
     def open(self, app_id: str) -> None:

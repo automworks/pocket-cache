@@ -15,6 +15,10 @@ def handle_actions(actions: list[str], state: DeviceState, router: ScreenRouter,
         current_screen = router.current(state)
         name = getattr(current_screen, "name", "")
 
+        if name == "screensaver":
+            router.last_input_at = monotonic()
+            continue
+
         if name == "menu":
             result = current_screen.handle_menu_action(action)
             if result == "handled":
