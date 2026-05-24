@@ -55,8 +55,12 @@ def _get_status() -> dict:
     disk_used = df_line[2] if len(df_line) > 4 else "N/A"
     disk_total = df_line[1] if len(df_line) > 4 else "N/A"
 
-    # Client count from arp table (devices seen on wlan0)
-    arp_raw = _run(["arp", "-n", "-i", "wlan0"])
+    # Client count from arp table — check uap0 (dev mode virtual AP) then wlan0
+    arp_raw = ""
+    for iface in ("uap0", "wlan0"):
+        arp_raw = _run(["arp", "-n", "-i", iface])
+        if arp_raw:
+            break
     clients = max(0, len(arp_raw.splitlines()) - 1) if arp_raw else 0
 
     return {
