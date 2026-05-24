@@ -7,7 +7,7 @@ from .adapters.pygame_adapter import PygameAdapter
 from .router import ScreenRouter
 from .state import DeviceState
 from .ui import UI
-from .config_manager import load_config, apply_runtime_config_to_state
+from .config_manager import load_config, apply_runtime_config_to_state, reboot_pi
 
 
 def handle_actions(actions: list[str], state: DeviceState, router: ScreenRouter, adapter: PygameAdapter) -> None:
@@ -70,7 +70,7 @@ def handle_actions(actions: list[str], state: DeviceState, router: ScreenRouter,
                 router.last_input_at = monotonic()
                 continue
 
-        if name == "portal":
+        if name == "connect":
             result = current_screen.handle_portal_action(action)
             if result == "handled":
                 router.last_input_at = monotonic()
@@ -78,6 +78,9 @@ def handle_actions(actions: list[str], state: DeviceState, router: ScreenRouter,
             if result == "exit":
                 router.back_to_menu()
                 router.last_input_at = monotonic()
+                continue
+            if result == "reboot":
+                reboot_pi()
                 continue
 
         if name == "settings":
@@ -132,6 +135,8 @@ def main() -> None:
     state = DeviceState()
     apply_runtime_config_to_state(state, load_config())
     router = ScreenRouter(auto_cycle_seconds=9.0)
+    if state.dev_mode:
+        router.active = "connect"
 
     try:
         while adapter.running:

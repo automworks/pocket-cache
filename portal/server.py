@@ -89,6 +89,17 @@ class PortalHandler(BaseHTTPRequestHandler):
         pass
 
     def do_GET(self):
+        # Captive portal redirect: OS probes (iOS, Android, Windows) arrive with a
+        # Host header pointing at an external domain. Redirect them to hello.html so
+        # the OS captive portal sheet opens automatically after joining the hotspot.
+        host = self.headers.get("Host", "")
+        if not host.startswith("10.0.0.1"):
+            self.send_response(302)
+            self.send_header("Location", "http://10.0.0.1/hello.html")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
+
         path = urlparse(self.path).path
 
         # Live status API

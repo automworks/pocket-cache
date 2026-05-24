@@ -14,6 +14,8 @@ def main() -> None:
     state = DeviceState()
     apply_runtime_config_to_state(state, load_config())
     router = ScreenRouter(auto_cycle_seconds=9.0)
+    if state.dev_mode:
+        router.active = "connect"
 
     try:
         while adapter.running:
