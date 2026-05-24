@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import pygame
 
 from .base import Screen
@@ -8,11 +9,12 @@ from ..qr import make_qr_surface
 
 
 class PortalScreen(Screen):
-    name = "portal"
+    name = "connect"
 
     def __init__(self) -> None:
         self.modes = ["hello", "portal", "wifi"]
-        self.index = 0
+        self.dev_mode = os.environ.get("POCKETCACHE_DEV") == "1"
+        self.index = 2 if self.dev_mode else 0
 
     @property
     def mode(self) -> str:
@@ -20,7 +22,7 @@ class PortalScreen(Screen):
 
     def handle_portal_action(self, action: str) -> str | None:
         if action == "back":
-            return "exit"
+            return "reboot" if self.dev_mode else "exit"
         if action == "left":
             self.index = (self.index - 1) % len(self.modes)
             return "handled"
@@ -30,8 +32,11 @@ class PortalScreen(Screen):
         return None
 
     def draw(self, surf: pygame.Surface, ui, state) -> None:
-        state.active_app = "portal"
-        ui.header(surf, "BACK", "MODE", state.led_color)
+        state.active_app = "connect"
+        back_label = "REBOOT" if self.dev_mode else "BACK"
+        ui.header(surf, back_label, "MODE", state.led_color)
+        if self.dev_mode:
+            ui.text(surf, "DEV", WIDTH - 38, 12, COLORS.warn, ui.font_xs)
 
         if self.mode == "wifi":
             payload = f"WIFI:T:WPA;S:{state.ssid};P:{state.password};;"

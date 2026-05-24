@@ -15,7 +15,7 @@ class AppMenuScreen(Screen):
         self.items = [
             ("Library", "library"),
             ("Play", "games"),
-            ("Connect", "portal"),
+            ("Connect", "connect"),
             ("Status", "status"),
             ("Settings", "settings"),
             ("About", "about"),

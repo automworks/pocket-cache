@@ -39,7 +39,7 @@ class ScreenRouter:
             "life": LifeScreen(),
             "dice": DiceScreen(),
             "reader": ReaderScreen(),
-            "portal": PortalScreen(),
+            "connect": PortalScreen(),
             "status": StatusScreen(),
             "settings": SettingsScreen(),
         }

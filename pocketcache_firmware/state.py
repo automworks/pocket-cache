@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from time import monotonic
 from .theme import APP_COLORS
@@ -11,6 +12,7 @@ class DeviceState:
     password: str = "cache-ready"
     portal_url: str = "http://10.0.0.1"
     ip_address: str = "10.0.0.1"
+    dev_mode: bool = field(default_factory=lambda: os.environ.get("POCKETCACHE_DEV", "0") == "1")
 
     battery_pct: int = 87
     clients: int = 0
@@ -101,7 +103,7 @@ class DeviceState:
             "life": (80, 255, 120),
             "dice": (255, 255, 80),
             "reader": (255, 210, 80),
-            "portal": (0, 180, 255),
+            "connect": (0, 180, 255),
             "status": (80, 255, 255),
             "settings": (255, 120, 40),
         }
